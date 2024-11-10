@@ -7,12 +7,15 @@ logging:
     org.springframework: INFO
 
 server:
-  port: 7777
+  port: 8870
+
 spring:
-  cloud:
-    openfeign:
-      client:
-        config:
-          default:
-            connectTimeout: 123000
-            readTimeout: 123000
+  datasource:
+    platform: postgresql
+    driverClassName: org.postgresql.Driver
+    url: ${POSTGRESQL_CONNECT_STRING:jdbc:postgresql://localhost:5432/body}
+    username: ${POSTGRESQL_USERNAME:user}
+    password: ${POSTGRESQL_PASSWORD:pass}
+  liquibase:
+    enabled: ${LIQUIBASE_ENABLED:true}
+    default-schema: public

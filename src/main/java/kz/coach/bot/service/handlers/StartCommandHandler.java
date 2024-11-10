@@ -7,10 +7,14 @@ import kz.coach.bot.service.keyboards.ButtonNameEnum;
 import kz.coach.bot.util.Consts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.chat.Chat;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
 
 import java.io.File;
 
@@ -42,15 +46,19 @@ public class StartCommandHandler implements UpdateHandler {
         Chat chat = update.getMessage().getChat();
 
         messageService.sendMessage(chatId.toString(), Consts.START_MESSAGE);
-        messageService.sendMessage(SendPhoto
-                .builder().chatId(chatId)
-                .photo(new InputFile(new File("src/main/resources/gif/1.jpg")))
-                .build());
-        messageService.sendMessage(SendPhoto
-                .builder().chatId(chatId)
-                .photo(new InputFile(new File("src/main/resources/gif/2.jpg")))
-                .build());
-        log.info("user start "+ chat.toString());
+        SendMessage message = SendMessage
+                .builder()
+                .chatId(update.getMessage().getChatId())
+                .text(Consts.BUY_TEXT)
+                .replyMarkup(InlineKeyboardMarkup
+                        .builder()
+                        .keyboardRow(new InlineKeyboardRow(InlineKeyboardButton.builder()
+                                .text("Купить")
+                                .callbackData("WANTS_TO_BUY").build()))
+                        .build())
+                .build();
+        messageService.sendCustomMessage(message);
+               log.info("user start "+ chat.toString());
 
     }
 }

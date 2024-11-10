@@ -1,7 +1,7 @@
 package kz.coach.bot.service;
 
-import kz.coach.bot.remote.Backend;
-import kz.coach.bot.remote.UserDTO;
+
+import kz.coach.bot.dto.UserDTO;
 import kz.coach.bot.service.api.EventProcessor;
 import kz.coach.bot.service.api.UpdateHandler;
 import kz.coach.bot.service.api.UpdateReaction;
@@ -28,16 +28,16 @@ public class UpdateEventProcessor implements EventProcessor {
     private final List<UpdateHandler> handlers;
     private final UpdateHandler defaultHandler;
     private final TelegramMessageService messageService;
-    private final Backend backend;
+    private final UserService userService;
 
 
     public UpdateEventProcessor(
                                 TelegramMessageService messageService,
-                                Backend backend
+                                UserService userService
                               ) {
 
         this.messageService = messageService;
-        this.backend = backend;
+        this.userService = userService;
         this.handlers = buildHandlerList();
         this.defaultHandler = new DefaultHandler(messageService);
 
@@ -55,20 +55,13 @@ public class UpdateEventProcessor implements EventProcessor {
         String status = null;
         Integer countGen = 0;
         if(update.getMessage()!= null){
-            String username = update.getMessage().getChat().getUserName();
-            if (username==null || username.equals("")){
-                username = update.getMessage().getChatId().toString();
-            }
-            UserDTO userDTO = backend.getUser(username);
+            String username = update.getMessage().getChatId().toString();
+            UserDTO userDTO = userService.getUser(username);
             if (userDTO == null){
                 userDTO = new UserDTO();
                 userDTO.setUsername(username);
-                backend.addUser(userDTO);
+                userService.addUser(userDTO);
                 log.info("user {} created", username);
-
-            } else {
-                countGen = backend.getCountGen(username);
-                status = backend.getStatus(username);
             }
         }
 
@@ -125,8 +118,7 @@ public class UpdateEventProcessor implements EventProcessor {
         List<UpdateHandler> handlerList = new ArrayList<>();
 
         handlerList.add(new StartCommandHandler(messageService));
-        handlerList.add(new StopCommandHandler(messageService));
-        handlerList.add(new InMessageHandler(messageService, backend));
+        handlerList.add(new InMessageHandler(messageService, userService));
         handlerList.add(new HelpCommandHandler(messageService));
 
         return handlerList;
