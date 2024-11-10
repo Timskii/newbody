@@ -1,0 +1,18 @@
+bot:
+  name: new_body_bot
+  token: 7087610534:AAHXGdekJJwcul4f1oNoRwcfiU7-0whx6Fw
+
+logging:
+  level:
+    org.springframework: INFO
+
+server:
+  port: 7777
+spring:
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connectTimeout: 123000
+            readTimeout: 123000
