@@ -15,6 +15,7 @@ public class ReplyKeyboardMaker {
         KeyboardRow row1 = new KeyboardRow();
         row1.add(new KeyboardButton(ButtonNameEnum.START_BUTTON.getButtonName()));
         row1.add(new KeyboardButton(ButtonNameEnum.HELP_BUTTON.getButtonName()));
+        row1.add(new KeyboardButton(ButtonNameEnum.TRAIN_COMMAND.getButtonName()));
 
         List<KeyboardRow> keyboard = new ArrayList<>();
         keyboard.add(row1);

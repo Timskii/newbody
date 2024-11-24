@@ -2,6 +2,8 @@ package kz.coach.bot.service.impl;
 
 
 import kz.coach.bot.dto.TrainingDTO;
+import kz.coach.bot.dto.TrainingTypes;
+import kz.coach.bot.entity.Training;
 import kz.coach.bot.mapping.TrainingMapper;
 import kz.coach.bot.repository.TrainingRepository;
 import kz.coach.bot.service.TrainingService;
@@ -26,5 +28,15 @@ public class TrainingServiceImpl implements TrainingService {
     @Override
     public void add(TrainingDTO dto) {
         repository.save(mapper.toDomain(dto));
+    }
+
+    @Override
+    public List<TrainingTypes> getTypes(){
+        return repository.findTrainingTypes();
+    }
+
+    @Override
+    public List<Training> findByType(String type) {
+        return repository.findByType(type);
     }
 }

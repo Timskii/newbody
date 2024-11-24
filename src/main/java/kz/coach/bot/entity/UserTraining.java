@@ -1,6 +1,7 @@
 package kz.coach.bot.entity;
 
 import jakarta.persistence.*;
+import kz.coach.bot.dto.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
@@ -25,4 +26,7 @@ public class UserTraining {
     @ManyToOne
     @JoinColumn(name = "training_id")
     private Training training;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 }

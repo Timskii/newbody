@@ -5,6 +5,7 @@ import kz.coach.bot.service.TelegramMessageService;
 import kz.coach.bot.service.UserService;
 import kz.coach.bot.service.api.UpdateHandler;
 import kz.coach.bot.service.api.UpdateReaction;
+import kz.coach.bot.service.impl.TrainingServiceImpl;
 import kz.coach.bot.service.impl.UserSubscriptionsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ public class InMessageHandler implements UpdateHandler {
     private final TelegramMessageService messageService;
     private final UserService userService;
     private final UserSubscriptionsServiceImpl userSubscriptionsService;
+    private final TrainingServiceImpl trainingService;
 
     @Override
     public UpdateReaction handle(Update update) {
@@ -30,13 +32,23 @@ public class InMessageHandler implements UpdateHandler {
         if (update.hasMessage() && update.getMessage().hasPhoto()) {
             return () -> sendAnswer(update);
         } else if (update.hasCallbackQuery() && update.getCallbackQuery().getData().equals("WANTS_TO_BUY")){
-            return () -> buy(update);
+            return () -> prepareToBuy(update);
+        }else if (update.hasCallbackQuery() && update.getCallbackQuery().getData().equals("ABOUT")) {
+            return () -> about(update);
         }
         return null;
     }
 
-    private void buy(Update update){
-        userSubscriptionsService.buy(update);
+    private void about(Update update) {
+        Long chatId = update.getCallbackQuery().getMessage().getChatId();
+        messageService.sendMessage(chatId.toString(), "Вот информация о тренировках:");
+        trainingService.getTypes().forEach(
+                s->  messageService.sendMessage(chatId.toString(),  s.getType() + " количество уроков: " + s.getCountLessons() + " уровень: " + s.getLevel())
+        );
+    }
+
+    private void prepareToBuy(Update update){
+        userSubscriptionsService.prepareToBuy(update);
     }
 
 

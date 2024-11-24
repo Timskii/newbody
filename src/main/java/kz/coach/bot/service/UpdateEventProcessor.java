@@ -7,6 +7,7 @@ import kz.coach.bot.service.api.EventProcessor;
 import kz.coach.bot.service.api.UpdateHandler;
 import kz.coach.bot.service.api.UpdateReaction;
 import kz.coach.bot.service.handlers.*;
+import kz.coach.bot.service.impl.TrainingServiceImpl;
 import kz.coach.bot.service.impl.UserSubscriptionsServiceImpl;
 import kz.coach.bot.util.Consts;
 import kz.coach.bot.util.TelegramHandlerUtil;
@@ -33,16 +34,22 @@ public class UpdateEventProcessor implements EventProcessor {
     private final TelegramMessageService messageService;
     private final UserService userService;
     private final UserSubscriptionsServiceImpl userSubscriptionsService;
+    private final TrainingServiceImpl trainingService;
+    private final UserTrainingService userTrainingService;
 
 
     public UpdateEventProcessor(
                                 TelegramMessageService messageService,
                                 UserService userService,
-                                UserSubscriptionsServiceImpl userSubscriptionsService
+                                UserSubscriptionsServiceImpl userSubscriptionsService,
+                                TrainingServiceImpl trainingService,
+                                UserTrainingService userTrainingService
                               ) {
 
         this.messageService = messageService;
         this.userService = userService;
+        this.trainingService = trainingService;
+        this.userTrainingService = userTrainingService;
         this.userSubscriptionsService = userSubscriptionsService;
         this.handlers = buildHandlerList();
         this.defaultHandler = new DefaultHandler(messageService);
@@ -71,9 +78,7 @@ public class UpdateEventProcessor implements EventProcessor {
                 userDTO.setLastName(chat.getLastName());
                 userService.addUser(userDTO);
                 log.info("{} created", chat.toString());
-            }
-
-            if (!userDTO.getStatus().equals(Status.ACTIVE)){
+            }else if (!userDTO.getStatus().equals(Status.ACTIVE)){
                 SendMessage message = SendMessage
                         .builder()
                         .chatId(update.getMessage().getChatId())
@@ -82,7 +87,10 @@ public class UpdateEventProcessor implements EventProcessor {
                                 .builder()
                                 .keyboardRow(new InlineKeyboardRow(InlineKeyboardButton.builder()
                                         .text("Приобрести")
-                                        .callbackData("WANTS_TO_BUY").build()))
+                                        .callbackData("WANTS_TO_BUY").build(),
+                                        InlineKeyboardButton.builder()
+                                                .text("О тренировках")
+                                                .callbackData("ABOUT").build()))
                                 .build())
                         .build();
                 messageService.sendCustomMessage(message);
@@ -112,8 +120,9 @@ public class UpdateEventProcessor implements EventProcessor {
         List<UpdateHandler> handlerList = new ArrayList<>();
 
         handlerList.add(new StartCommandHandler(messageService));
-        handlerList.add(new InMessageHandler(messageService, userService, userSubscriptionsService));
+        handlerList.add(new InMessageHandler(messageService, userService, userSubscriptionsService, trainingService));
         handlerList.add(new HelpCommandHandler(messageService));
+        handlerList.add(new TrainingCommandHandler(messageService, trainingService, userTrainingService));
 
         return handlerList;
     }

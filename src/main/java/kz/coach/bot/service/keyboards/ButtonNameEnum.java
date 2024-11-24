@@ -2,7 +2,9 @@ package kz.coach.bot.service.keyboards;
 
 public enum ButtonNameEnum {
     START_BUTTON("Начать", "start"),
-    HELP_BUTTON("Помощь", "help");
+    HELP_BUTTON("Помощь", "help"),
+    TRAIN_COMMAND("Мои тренировки", "train");
+
 
     private final String buttonName;
     private final String buttonCommand;

@@ -2,8 +2,10 @@ package kz.coach.bot.controller;
 
 import kz.coach.bot.dto.SPDTO;
 import kz.coach.bot.dto.TrainingDTO;
+import kz.coach.bot.dto.TrainingTypes;
 import kz.coach.bot.service.SubscriptionPlansService;
 import kz.coach.bot.service.TrainingService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +26,11 @@ public class TrainingController {
     @PostMapping("/add")
     void add(@RequestBody TrainingDTO dto){
          trainingService.add(dto);
+    }
+
+    @GetMapping("/types")
+    List<TrainingTypes> getTypes(){
+        return trainingService.getTypes();
     }
 
 }

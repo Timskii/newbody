@@ -31,7 +31,6 @@ public class User {
     @Column(length = 20)
     private String password;
 
-    @Column(length = 20)
     @Enumerated(EnumType.STRING)
     private Status status;
 

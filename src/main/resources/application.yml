@@ -19,3 +19,5 @@ spring:
   liquibase:
     enabled: ${LIQUIBASE_ENABLED:true}
     default-schema: public
+  jpa:
+    show_sql: true

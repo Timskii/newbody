@@ -28,6 +28,10 @@ public class UserService {
         return mapper.toDto(repository.findByChatId(chatId).orElse(null));
     }
 
+    public User getUserEntity(Long chatId){
+        return repository.findByChatId(chatId).orElse(null);
+    }
+
     public String addUser(UserDTO userDTO) {
         repository.save(mapper.toDomain(userDTO));
         return "ok";

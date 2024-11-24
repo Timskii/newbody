@@ -65,7 +65,7 @@ public class UserSubscriptionsServiceImpl implements UserSubscriptionsService {
         }
     }
 
-    public void buy(Update update){
+    public void prepareToBuy(Update update){
         UserDTO userDTO = new UserDTO();
         Long chatId = update.getCallbackQuery().getMessage().getChatId();
 

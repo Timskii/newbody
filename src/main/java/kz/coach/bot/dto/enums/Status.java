@@ -3,7 +3,8 @@ package kz.coach.bot.dto.enums;
 public enum Status {
     ACTIVE,
     CREATED,
-    PENDING;
+    PENDING,
+    DONE;
 
     public static boolean isStatusFileValue(String value){
         try{

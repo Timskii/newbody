@@ -2,6 +2,7 @@ package kz.coach.bot.mapping;
 
 
 import kz.coach.bot.dto.TrainingDTO;
+import kz.coach.bot.dto.TrainingTypes;
 import kz.coach.bot.entity.Training;
 
 import org.mapstruct.Mapper;
