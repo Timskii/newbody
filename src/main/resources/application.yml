@@ -20,4 +20,4 @@ spring:
     enabled: ${LIQUIBASE_ENABLED:true}
     default-schema: public
   jpa:
-    show_sql: true
+    show_sql: false

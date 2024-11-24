@@ -21,8 +21,8 @@ public class UserTrainingScheduler {
     private final TelegramMessageService telegramMessageService;
 
 
-//    @Scheduled(cron = "0 0 9 * * MON,WED,FRI")
-@Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 0 9 * * MON,WED,FRI")
+//@Scheduled(cron = "0 * * * * *")
     public void train(){
         log.info("start train");
         userService.getAllActive().forEach(
