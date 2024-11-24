@@ -50,4 +50,8 @@ public class UserService {
         return repository.findAllByCreatedAtAfter(date)
                 .stream().map(mapper::toDto).toList();
     }
+
+    public List<UserDTO> getAll() {
+        return repository.findAll().stream().map(mapper::toDto).toList();
+    }
 }
