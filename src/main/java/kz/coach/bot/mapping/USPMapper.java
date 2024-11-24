@@ -13,6 +13,7 @@ public interface USPMapper {
 
     @Mappings({
             @Mapping( target = "username", source = "user.username"),
+            @Mapping( target = "chatId", source = "user.chatId"),
             @Mapping( target = "plans", source = "plans.name")
     })
     USPDTO toDto (UserSubscriptions userSubscriptions);

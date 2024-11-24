@@ -15,7 +15,8 @@ public interface UserMapper {
     UserDTO toDto (User user);
 
     @Mappings({
-            @Mapping( target = "id", ignore = true)
+            @Mapping( target = "id", ignore = true),
+            @Mapping( target = "password", ignore = true)
     })
     User toDomain (UserDTO dto);
 }

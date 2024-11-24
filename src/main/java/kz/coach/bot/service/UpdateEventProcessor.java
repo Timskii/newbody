@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.chat.Chat;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
@@ -53,15 +54,21 @@ public class UpdateEventProcessor implements EventProcessor {
     @Override
     public void process(Update update) {
         String status = null;
+
+
         Integer countGen = 0;
         if(update.getMessage()!= null){
-            String username = update.getMessage().getChatId().toString();
-            UserDTO userDTO = userService.getUser(username);
+            Chat chat = update.getMessage().getChat();
+            UserDTO userDTO = userService.getUser(chat.getId());
             if (userDTO == null){
                 userDTO = new UserDTO();
-                userDTO.setUsername(username);
+                userDTO.setUsername(chat.getUserName());
+                userDTO.setChatId(chat.getId());
+                userDTO.setStatus("CREATED");
+                userDTO.setFirstName(chat.getFirstName());
+                userDTO.setLastName(chat.getLastName());
                 userService.addUser(userDTO);
-                log.info("user {} created", username);
+                log.info("{} created", chat.toString());
             }
         }
 

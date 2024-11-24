@@ -33,7 +33,7 @@ public class UserSubscriptionsServiceImpl implements UserSubscriptionsService {
     @Override
     public void add(USPDTO dto) {
         Optional<SubscriptionPlans> subscriptionPlansOptional = subscriptionPlansRepository.findByName(dto.getPlans());
-        Optional<User> userOptional = userRepository.findByUsername(dto.getUsername());
+        Optional<User> userOptional = userRepository.findByChatId(dto.getChatId());
 
         if(subscriptionPlansOptional.isPresent() && userOptional.isPresent()){
 

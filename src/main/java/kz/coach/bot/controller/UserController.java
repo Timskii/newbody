@@ -1,6 +1,5 @@
 package kz.coach.bot.controller;
 
-import kz.coach.bot.dto.USPDTO;
 import kz.coach.bot.dto.UserDTO;
 import kz.coach.bot.service.UserService;
 import lombok.RequiredArgsConstructor;

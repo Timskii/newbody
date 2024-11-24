@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface UserRepository extends JpaRepository<User, UUID> {
     Optional<User> findByUsername(String username);
     List<User> findAllByCreatedAtAfter(OffsetDateTime date);
+    Optional<User> findByChatId(Long chatId);
 }

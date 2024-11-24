@@ -7,6 +7,7 @@ import java.time.LocalDate;
 public class USPDTO {
 
     private String username;
+    private Long chatId;
     private String plans;
     private LocalDate startDate;
 

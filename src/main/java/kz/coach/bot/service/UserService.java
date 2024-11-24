@@ -23,6 +23,10 @@ public class UserService {
         return mapper.toDto(repository.findByUsername(username).orElse(null));
     }
 
+    public UserDTO getUser(Long chatId){
+        return mapper.toDto(repository.findByChatId(chatId).orElse(null));
+    }
+
     public String addUser(UserDTO userDTO) {
         repository.save(mapper.toDomain(userDTO));
         return "ok";
@@ -34,7 +38,7 @@ public class UserService {
 
     public void setStatus(String status, UserDTO userDTO) {
         User user;
-        Optional<User> userOptional = repository.findByUsername(userDTO.getUsername());
+        Optional<User> userOptional = repository.findByChatId(userDTO.getChatId());
         if (userOptional.isPresent()){
             user = userOptional.get();
             user.setStatus(status);

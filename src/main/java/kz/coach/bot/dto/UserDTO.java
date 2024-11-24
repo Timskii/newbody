@@ -9,4 +9,7 @@ import java.time.OffsetDateTime;
 public class UserDTO {
     private String username;
     private String status;
+    private String firstName;
+    private String lastName;
+    private Long chatId;
 }
