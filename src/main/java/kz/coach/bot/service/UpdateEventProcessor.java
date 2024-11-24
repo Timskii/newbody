@@ -2,10 +2,12 @@ package kz.coach.bot.service;
 
 
 import kz.coach.bot.dto.UserDTO;
+import kz.coach.bot.dto.enums.Status;
 import kz.coach.bot.service.api.EventProcessor;
 import kz.coach.bot.service.api.UpdateHandler;
 import kz.coach.bot.service.api.UpdateReaction;
 import kz.coach.bot.service.handlers.*;
+import kz.coach.bot.service.impl.UserSubscriptionsServiceImpl;
 import kz.coach.bot.util.Consts;
 import kz.coach.bot.util.TelegramHandlerUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -30,15 +32,18 @@ public class UpdateEventProcessor implements EventProcessor {
     private final UpdateHandler defaultHandler;
     private final TelegramMessageService messageService;
     private final UserService userService;
+    private final UserSubscriptionsServiceImpl userSubscriptionsService;
 
 
     public UpdateEventProcessor(
                                 TelegramMessageService messageService,
-                                UserService userService
+                                UserService userService,
+                                UserSubscriptionsServiceImpl userSubscriptionsService
                               ) {
 
         this.messageService = messageService;
         this.userService = userService;
+        this.userSubscriptionsService = userSubscriptionsService;
         this.handlers = buildHandlerList();
         this.defaultHandler = new DefaultHandler(messageService);
 
@@ -53,67 +58,49 @@ public class UpdateEventProcessor implements EventProcessor {
      */
     @Override
     public void process(Update update) {
-        String status = null;
 
-
-        Integer countGen = 0;
-        if(update.getMessage()!= null){
+        if (update.getMessage()!= null) {
             Chat chat = update.getMessage().getChat();
             UserDTO userDTO = userService.getUser(chat.getId());
             if (userDTO == null){
                 userDTO = new UserDTO();
                 userDTO.setUsername(chat.getUserName());
                 userDTO.setChatId(chat.getId());
-                userDTO.setStatus("CREATED");
+                userDTO.setStatus(Status.CREATED);
                 userDTO.setFirstName(chat.getFirstName());
                 userDTO.setLastName(chat.getLastName());
                 userService.addUser(userDTO);
                 log.info("{} created", chat.toString());
             }
+
+            if (!userDTO.getStatus().equals(Status.ACTIVE)){
+                SendMessage message = SendMessage
+                        .builder()
+                        .chatId(update.getMessage().getChatId())
+                        .text(Consts.BUY_TEXT)
+                        .replyMarkup(InlineKeyboardMarkup
+                                .builder()
+                                .keyboardRow(new InlineKeyboardRow(InlineKeyboardButton.builder()
+                                        .text("Приобрести")
+                                        .callbackData("WANTS_TO_BUY").build()))
+                                .build())
+                        .build();
+                messageService.sendCustomMessage(message);
+            }
         }
+        UpdateReaction updateReaction = handlers.stream()
+                .map(handler -> handler.handle(update))
+                .filter(Objects::nonNull)
+                .collect(Collectors.collectingAndThen(Collectors.toList(), reactions -> {
+                    if (reactions.size() != 1) {
+                        logInvalidReactionQuantity(reactions.size(), update);
+                        return !reactions.isEmpty() ? reactions.get(0) : defaultHandler.handle(update);
+                    }
+                    return reactions.get(0);
+                }));
 
-        if (status!=null && status.equals("WANTS_TO_BUY")) {
-            SendMessage message = SendMessage
-                    .builder()
-                    .chatId(update.getMessage().getChatId())
-                    .text(Consts.SOON_TEXT)
-                    .replyMarkup(InlineKeyboardMarkup
-                            .builder()
-                            .keyboardRow(new InlineKeyboardRow(InlineKeyboardButton.builder()
-                                    .text(Consts.INSTAGRAM_BUTTON)
-                                    .url(Consts.INSTAGRAM_URL)
-                                    .build()))
-                            .build())
-                    .build();
-            messageService.sendCustomMessage(message);
+        updateReaction.execute();
 
-        }else if (status == null && countGen!=null && countGen >=3){
-            SendMessage message = SendMessage
-                    .builder()
-                    .chatId(update.getMessage().getChatId())
-                    .text(Consts.BUY_TEXT)
-                    .replyMarkup(InlineKeyboardMarkup
-                            .builder()
-                            .keyboardRow(new InlineKeyboardRow(InlineKeyboardButton.builder()
-                                    .text("Купить")
-                                    .callbackData("WANTS_TO_BUY").build()))
-                            .build())
-                    .build();
-            messageService.sendCustomMessage(message);
-        } else {
-            UpdateReaction updateReaction = handlers.stream()
-                    .map(handler -> handler.handle(update))
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.collectingAndThen(Collectors.toList(), reactions -> {
-                        if (reactions.size() != 1) {
-                            logInvalidReactionQuantity(reactions.size(), update);
-                            return !reactions.isEmpty() ? reactions.get(0) : defaultHandler.handle(update);
-                        }
-                        return reactions.get(0);
-                    }));
-
-            updateReaction.execute();
-        }
     }
 
     private static void logInvalidReactionQuantity(int reactionsCount, Update update) {
@@ -125,7 +112,7 @@ public class UpdateEventProcessor implements EventProcessor {
         List<UpdateHandler> handlerList = new ArrayList<>();
 
         handlerList.add(new StartCommandHandler(messageService));
-        handlerList.add(new InMessageHandler(messageService, userService));
+        handlerList.add(new InMessageHandler(messageService, userService, userSubscriptionsService));
         handlerList.add(new HelpCommandHandler(messageService));
 
         return handlerList;

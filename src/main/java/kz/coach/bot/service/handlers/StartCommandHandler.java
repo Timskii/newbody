@@ -46,19 +46,7 @@ public class StartCommandHandler implements UpdateHandler {
         Chat chat = update.getMessage().getChat();
 
         messageService.sendMessage(chatId.toString(), Consts.START_MESSAGE);
-        SendMessage message = SendMessage
-                .builder()
-                .chatId(update.getMessage().getChatId())
-                .text(Consts.BUY_TEXT)
-                .replyMarkup(InlineKeyboardMarkup
-                        .builder()
-                        .keyboardRow(new InlineKeyboardRow(InlineKeyboardButton.builder()
-                                .text("Купить")
-                                .callbackData("WANTS_TO_BUY").build()))
-                        .build())
-                .build();
-        messageService.sendCustomMessage(message);
-               log.info("user start "+ chat.toString());
+        log.info("user start "+ chat.toString());
 
     }
 }

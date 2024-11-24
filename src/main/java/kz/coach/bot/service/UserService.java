@@ -2,6 +2,7 @@ package kz.coach.bot.service;
 
 
 import kz.coach.bot.dto.UserDTO;
+import kz.coach.bot.dto.enums.Status;
 import kz.coach.bot.entity.User;
 import kz.coach.bot.mapping.UserMapper;
 import kz.coach.bot.repository.UserRepository;
@@ -36,7 +37,7 @@ public class UserService {
         return repository.findAll().stream().map(mapper::toDto).toList();
     }
 
-    public void setStatus(String status, UserDTO userDTO) {
+    public void setStatus(Status status, UserDTO userDTO) {
         User user;
         Optional<User> userOptional = repository.findByChatId(userDTO.getChatId());
         if (userOptional.isPresent()){
@@ -46,8 +47,8 @@ public class UserService {
         }
     }
 
-    public String getUserStatus( String username) {
-        return repository.findByUsername(username).orElse(new User()).getStatus();
+    public Status getUserStatus(Long chatId) {
+        return repository.findByChatId(chatId).orElse(new User()).getStatus();
     }
 
     public List<UserDTO> getAllUserAfterDate(OffsetDateTime date) {

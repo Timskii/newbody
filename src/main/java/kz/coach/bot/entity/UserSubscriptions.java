@@ -1,6 +1,7 @@
 package kz.coach.bot.entity;
 
 import jakarta.persistence.*;
+import kz.coach.bot.dto.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
@@ -34,7 +35,8 @@ public class UserSubscriptions {
     @Column(name = "end_date")
     private LocalDate endDate;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @Column(name = "payment_method")
     private String paymentMethod;

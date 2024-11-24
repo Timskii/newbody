@@ -14,7 +14,8 @@ public class Consts {
     public static final String SOON_TEXT = "Спасибо, что выбрали нас! \uD83C\uDF1F\n" +
             "\n" +
             "AIDesigner бот сейчас на этапе тестирования и доработки, поэтому пока доступен ограниченному числу пользователей. Чтобы следить за нашими обновлениями и узнать о полном запуске, подписывайтесь на наш Instagram!";
-    public static final String BUY_TEXT = "Хотите больше генераций дизайна?\nНажмите кнопку “Купить” и получите 10 генераций";
+    public static final String BUY_TEXT = "для продолжения необходимо нам дать ваши деньги";
+    public static final String BUY_INSTRUCTION = "вот инструкция по оплате: ...";
     public static final String INSTAGRAM_BUTTON = "Перейти";
     public static final String INSTAGRAM_URL = "https://www.instagram.com/aidesignerkz/";
 

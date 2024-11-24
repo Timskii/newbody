@@ -1,6 +1,7 @@
 package kz.coach.bot.entity;
 
 import jakarta.persistence.*;
+import kz.coach.bot.dto.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
@@ -31,7 +32,8 @@ public class User {
     private String password;
 
     @Column(length = 20)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @Column(name = "first_name")
     private String firstName;
