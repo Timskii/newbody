@@ -35,6 +35,14 @@ public class UserTrainingService {
     }
 
     public List<UserTraining> getTrain (Long chatId){
-        return userTrainingRepository.findByUserChatId(chatId);
+        return userTrainingRepository.findByUserChatIdOrderByTrainingStep(chatId);
+    }
+
+    public List<UserTraining> getActiveTrain (Long chatId){
+        return userTrainingRepository.findByUserChatIdAndStatusOrderByTrainingStep(chatId, Status.CREATED);
+    }
+
+    public void updateTrain (UserTraining userTraining){
+        userTrainingRepository.save(userTraining);
     }
 }

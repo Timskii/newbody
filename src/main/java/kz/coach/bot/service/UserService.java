@@ -63,4 +63,8 @@ public class UserService {
     public List<UserDTO> getAll() {
         return repository.findAll().stream().map(mapper::toDto).toList();
     }
+
+    public List<User> getAllActive() {
+        return repository.findByStatus(Status.ACTIVE);
+    }
 }
