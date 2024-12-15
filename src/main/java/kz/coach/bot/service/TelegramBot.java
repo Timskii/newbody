@@ -35,13 +35,7 @@ public class TelegramBot implements SpringLongPollingBot, LongPollingSingleThrea
 
     @Override
     public void consume(Update update) {
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                updateEventProcessor.process(update);
-            }
-        });
-        thread.start();
+        updateEventProcessor.process(update);
     }
 
     @AfterBotRegistration

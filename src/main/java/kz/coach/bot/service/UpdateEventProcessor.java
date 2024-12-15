@@ -26,6 +26,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static kz.coach.bot.dto.enums.CallbackData.ABOUT;
+import static kz.coach.bot.dto.enums.CallbackData.WANTS_TO_BUY;
+
 @Slf4j
 @Component
 public class UpdateEventProcessor implements EventProcessor {
@@ -87,10 +90,10 @@ public class UpdateEventProcessor implements EventProcessor {
                                 .builder()
                                 .keyboardRow(new InlineKeyboardRow(InlineKeyboardButton.builder()
                                         .text("Приобрести")
-                                        .callbackData("WANTS_TO_BUY").build(),
+                                        .callbackData(WANTS_TO_BUY.getName()).build(),
                                         InlineKeyboardButton.builder()
                                                 .text("О тренировках")
-                                                .callbackData("ABOUT").build()))
+                                                .callbackData(ABOUT.getName()).build()))
                                 .build())
                         .build();
                 messageService.sendCustomMessage(message);

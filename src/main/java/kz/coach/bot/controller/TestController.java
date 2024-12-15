@@ -1,9 +1,10 @@
 package kz.coach.bot.controller;
 
 import kz.coach.bot.service.TestSevice;
-import kz.coach.bot.service.UserService;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -11,9 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
     private final TestSevice testSevice;
 
-    @GetMapping("/test")
-    void getTest(){
-        testSevice.sendMessageToUser();
+
+    @PostMapping("/send")
+    void send(@RequestParam String message){
+        testSevice.sendMessageToUser(message);
     }
 
 }

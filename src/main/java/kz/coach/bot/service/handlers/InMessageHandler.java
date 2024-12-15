@@ -16,6 +16,9 @@ import org.telegram.telegrambots.meta.api.objects.chat.Chat;
 
 import java.util.*;
 
+import static kz.coach.bot.dto.enums.CallbackData.ABOUT;
+import static kz.coach.bot.dto.enums.CallbackData.WANTS_TO_BUY;
+
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,9 +34,9 @@ public class InMessageHandler implements UpdateHandler {
 
         if (update.hasMessage() && update.getMessage().hasPhoto()) {
             return () -> sendAnswer(update);
-        } else if (update.hasCallbackQuery() && update.getCallbackQuery().getData().equals("WANTS_TO_BUY")){
+        } else if (update.hasCallbackQuery() && update.getCallbackQuery().getData().equals(WANTS_TO_BUY.getName())){
             return () -> prepareToBuy(update);
-        }else if (update.hasCallbackQuery() && update.getCallbackQuery().getData().equals("ABOUT")) {
+        }else if (update.hasCallbackQuery() && update.getCallbackQuery().getData().equals(ABOUT.getName())) {
             return () -> about(update);
         }
         return null;

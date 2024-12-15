@@ -3,10 +3,8 @@ package kz.coach.bot.service;
 import kz.coach.bot.config.BotProperties;
 import kz.coach.bot.service.keyboards.ReplyKeyboardMaker;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
-import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendAnimation;
 import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
@@ -14,15 +12,12 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
-import org.telegram.telegrambots.meta.api.objects.File;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
-import java.io.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
 
 @Slf4j
 @Service
@@ -34,32 +29,6 @@ public class TelegramMessageService {
     public TelegramMessageService(BotProperties properties, ReplyKeyboardMaker replyKeyboardMaker) {
         this.telegramClient = new OkHttpTelegramClient(properties.getToken());
         this.replyKeyboardMaker = replyKeyboardMaker;
-    }
-
-    public String getPhoto(String chatId, String fileId, String username) {
-        GetFile getFile = new GetFile(fileId);
-        String filename = username + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"))+".jpg";
-        try {
-            File file = telegramClient.execute(getFile); //tg file obj
-            InputStream is = telegramClient.downloadFileAsStream(file);
-
-
-            String base64file = new String(Base64.encodeBase64( is.readAllBytes(), false), "UTF-8");
-
-            return base64file;
-
-
-        } catch (FileNotFoundException e){
-            log.error("FileNotFoundException message", e);
-
-        } catch (TelegramApiException e) {
-            log.error("TelegramApiException message", e);
-
-        } catch (IOException e){
-            log.error("IOException message", e);
-
-        }
-        return null;
     }
 
     public void sendMessage(String chatId, String message) {
@@ -78,7 +47,6 @@ public class TelegramMessageService {
                 .replyMarkup(replyKeyboardMaker.getMainMenuKeyboard())
                 .build());
     }
-
 
     public void sendMessage(SendPhoto sendPhoto) {
         try {

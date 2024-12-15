@@ -10,9 +10,10 @@ public class TestSevice {
     private final UserService userService;
     private final TelegramMessageService messageService;
 
-    public void sendMessageToUser() {
+
+    public void sendMessageToUser(String message) {
         userService.getAllUser().forEach(s-> {
-            messageService.sendMessage(s.getUsername(),"https://www.youtube.com/watch?v=rk0Cqndt4tA");
+            messageService.sendMessage(s.getChatId().toString(),message);
         });
     }
 }
