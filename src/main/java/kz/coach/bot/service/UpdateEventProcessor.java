@@ -68,19 +68,15 @@ public class UpdateEventProcessor implements EventProcessor {
      */
     @Override
     public void process(Update update) {
-
         if (update.getMessage()!= null) {
+            log.info(update.getMessage().getFrom().toString());
+
             Chat chat = update.getMessage().getChat();
             UserDTO userDTO = userService.getUser(chat.getId());
+
             if (userDTO == null){
-                userDTO = new UserDTO();
-                userDTO.setUsername(chat.getUserName());
-                userDTO.setChatId(chat.getId());
-                userDTO.setStatus(Status.CREATED);
-                userDTO.setFirstName(chat.getFirstName());
-                userDTO.setLastName(chat.getLastName());
-                userService.addUser(userDTO);
-                log.info("{} created", chat.toString());
+                userService.addUserFromChat(chat);
+                log.info("{} created", chat);
             }else if (!userDTO.getStatus().equals(Status.ACTIVE)){
                 SendMessage message = SendMessage
                         .builder()

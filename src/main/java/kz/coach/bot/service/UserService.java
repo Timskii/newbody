@@ -8,6 +8,7 @@ import kz.coach.bot.mapping.UserMapper;
 import kz.coach.bot.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.objects.chat.Chat;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -35,6 +36,16 @@ public class UserService {
     public String addUser(UserDTO userDTO) {
         repository.save(mapper.toDomain(userDTO));
         return "ok";
+    }
+
+    public void addUserFromChat(Chat chat) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUsername(chat.getUserName());
+        userDTO.setChatId(chat.getId());
+        userDTO.setStatus(Status.CREATED);
+        userDTO.setFirstName(chat.getFirstName());
+        userDTO.setLastName(chat.getLastName());
+        repository.save(mapper.toDomain(userDTO));
     }
 
     public List<UserDTO> getAllUser() {

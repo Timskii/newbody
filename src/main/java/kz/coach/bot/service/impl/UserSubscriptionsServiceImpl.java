@@ -26,6 +26,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -63,6 +64,11 @@ public class UserSubscriptionsServiceImpl implements UserSubscriptionsService {
 
 
         }
+    }
+
+    @Override
+    public boolean isActiveSubscription(UUID userId) {
+        return repository.findByUserIdAndEndDateAfter(userId, LocalDate.now()).isPresent();
     }
 
     public void prepareToBuy(Update update){
