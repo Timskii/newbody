@@ -1,6 +1,6 @@
 bot:
   name: new_body_bot
-  token: 7087610534:AAHXGdekJJwcul4f1oNoRwcfiU7-0whx6Fw
+  token: ${TOKEN}
 
 logging:
   level:
